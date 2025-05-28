@@ -21,6 +21,7 @@ using namespace nlohmann;
 #include "moc_qgsoapifitemsrequest.cpp"
 #include "qgsoapifutils.h"
 #include "qgsproviderregistry.h"
+#include "qgsstacasset.h"
 
 #include "cpl_vsi.h"
 
@@ -194,6 +195,28 @@ void QgsOapifItemsRequest::processReply()
             {
               mFoundIdInProperties = true;
             }
+          }
+          if ( jFeature.is_object() && jFeature.contains( "assets" ) )
+          {
+            QString href = "https://dl1.lantmateriet.se/bild/data/orto/se0_25i_sweref/2016_A2/2016_A2_NV/o62575_4075_25_im16.tif";
+            QString title = "asset";
+            QString description = "example";
+            QString mediatypes = "image/tiff; application=geotiff; profile=cloud-optimized";
+            QStringList roles = { "data" };
+
+            QgsStacAsset asset( href, title, description, mediatypes, roles );
+
+            QVariant variantAsset = QVariant::fromValue( asset );
+            QMap<QString, QVariant> map;
+            map.insert( "asset", variantAsset );
+
+            QgsField fields( "assets", QMetaType::Type::QVariantMap, "assets", 0, 0, QString(), QMetaType::Type::QVariantMap );
+            mFields.append( fields );
+            mFeatures[i].first.setFields( mFields, false );
+
+            QgsAttributes attributes = mFeatures[i].first.attributes();
+            attributes << map;
+            mFeatures[i].first.setAttributes( attributes );
           }
         }
       }

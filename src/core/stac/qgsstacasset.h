@@ -34,6 +34,9 @@
 class CORE_EXPORT QgsStacAsset
 {
   public:
+    // Default constructor
+    QgsStacAsset() = default;
+
     //! Constructor
     QgsStacAsset( const QString &href,
                   const QString &title,
@@ -87,5 +90,7 @@ class CORE_EXPORT QgsStacAsset
     QString mMediaType;
     QStringList mRoles;
 };
+
+Q_DECLARE_METATYPE( QgsStacAsset )
 
 #endif // QGSSTACASSET_H
